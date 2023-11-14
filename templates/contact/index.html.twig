@@ -1,0 +1,43 @@
+{% extends 'layout/app.html.twig' %}
+
+
+{% block PAGE_CSS %}
+{% endblock %}
+
+{% block CONTENT_MID %}
+
+<!-- CONTACT START -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mt-5 mb-5"><b>Contact</b></h1>
+                <hr>
+            </div>
+        </div>
+        {{ form_start(form, {'attr': {'class': 'row g-3 mt-5', 'novalidate': true}}) }}
+            <div class="offset-3 col-6">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email)}}
+                <b>{{ form_errors(form.email) }}</b>
+            </div>
+            <div class="offset-3 col-6">
+                {{ form_label(form.full_name) }}
+                {{ form_widget(form.full_name)}}
+                <b>{{ form_errors(form.full_name) }}</b>
+            </div>
+            <div class="offset-3 col-6">
+                {{ form_label(form.message) }}
+                {{ form_widget(form.message)}}
+                <b>{{ form_errors(form.message) }}</b>
+            </div>
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary px-5"><b>Submit</b></button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+    <!-- CONTACT END -->
+
+{% endblock %}
+
+{% block PAGE_JS %}
+{% endblock %}

@@ -1,0 +1,14 @@
+pimcore_static_routes:
+    definitions:
+        b64ed235-967f-4479-a10c-f4400476da4e:
+            name: blog
+            pattern: /blog
+            reverse: /blog
+            controller: null
+            variables: ''
+            defaults: ''
+            siteId: {  }
+            methods: {  }
+            priority: 0
+            creationDate: 1699620321
+            modificationDate: 1699620373

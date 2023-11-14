@@ -1,0 +1,24 @@
+{% if blog_posts is defined and (blog_posts | length > 0) %}
+    {% for blog_post in blog_posts %}
+        <div class="col-4">
+            <div class="card mb-3">
+                {{ (blog_post.image is defined ? blog_post.image.thumbnail('blogPostThumb').html : '') | raw }}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ blog_post.title is defined ? blog_post.title : '' }}</h5>
+                    <p class="card-text">{{ blog_post.short_description is defined ? blog_post.short_description : '' }}</p>
+                    <p class="card-text"><small class="text-muted">{{ blog_post.posted is defined ? blog_post.posted : ''  }}</small></p>
+                    <a href="{{ blog_post.slug is defined ? blog_post.slug : '' }}" class="btn btn-primary stretched-link">Read more</a>
+                    <hr>
+                    <span class="pe-2">Tags:</span>
+                    {% if blog_post.tags is defined and (blog_post.tags | length > 0) %}
+                        {% for tag in blog_post.tags %}
+                            <span class="badge bg-secondary">{{ tag.name is defined ? tag.name : ''}}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+   

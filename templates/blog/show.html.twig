@@ -1,0 +1,113 @@
+{% extends 'layout/app.html.twig' %}
+
+{% block SEO %}
+  {% apply spaceless -%}
+    {% if blog_post.seo_title is defined and blog_post.seo_title is not null %}
+      {% do pimcore_head_title().set(blog_post.seo_title) %}
+      {% do pimcore_head_meta().setProperty('og:title', blog_post.seo_title) %}
+      {% do pimcore_head_meta().setProperty('twitter:title', blog_post.seo_title) %}
+    {% endif %}
+
+    {% if blog_post.seo_description is defined and blog_post.seo_description is not null %}
+      {% do pimcore_head_meta().setDescription(blog_post.seo_description) %}
+      {% do pimcore_head_meta().setProperty('og:description', blog_post.seo_description) %}
+      {% do pimcore_head_meta().setProperty('twitter:description', blog_post.seo_description) %}
+    {% endif %}
+
+    {% if blog_post.seo_image is defined and blog_post.seo_image is not null %}
+      {% do pimcore_head_meta().setProperty('og:image', app.request.getSchemeAndHttpHost() ~ blog_post.seo_image.thumbnail('blogPostOgImage').path) %}
+      {% do pimcore_head_meta().setProperty('twitter:image', app.request.getSchemeAndHttpHost() ~ blog_post.seo_image.thumbnail('blogPostOgImage').path) %}
+    {% endif %}
+
+    {% do pimcore_head_meta().setProperty('og:type', 'article') %}
+
+    {% if blog_post.og_url is defined and blog_post.og_url is not null %}
+      {% do pimcore_head_meta().setProperty('og:url', blog_post.og_url) %}
+    {% endif %}
+
+    {% if blog_post.og_locale is defined and blog_post.og_locale is not null %}
+      {% do pimcore_head_meta().setProperty('og:locale', blog_post.og_locale) %}
+    {% endif %}
+
+    {% if blog_post.og_canonical_url is defined and blog_post.og_canonical_url is not null %}
+      <link rel="canonical" href="{{ blog_post.canonical_url }}" />
+    {% endif %}
+
+  {%- endapply %}
+{% endblock %}
+
+{% block PAGE_CSS %}
+{% endblock %}
+
+{% block CONTENT_MID %}
+<!-- BLOG SINGLE START -->
+  <div class="container">
+    <div class="row g-5 mt-3">
+      <div class="col-md-8">
+        <article class="blog-post">
+          <h2 class="blog-post-title">{{ blog_post.title is defined ? blog_post.title : '' }}</h2>
+          <p class="blog-post-meta">
+            {{ blog_post.posted is defined ? blog_post.posted : '' }} 
+            by <b>{{ blog_post.posted_by is defined ? blog_post.posted_by : ''}}</b>
+          </p>
+
+          <p>{{ blog_post.short_description is defined ? blog_post.short_description : '' }}</p>
+          <hr>
+          {{ (blog_post.content is defined ? blog_post.content : '') | raw }}          
+        </article>
+        <div class="row">
+          <div class="col-md-12">
+            <span class="pe-2">Tags:</span>
+
+            {% if blog_post.tags is defined and (blog_post.tags | length > 0) %}
+              {% for tag in blog_post.tags %}
+                <a href="{{ pimcore_url({query: tag.name}, 'blog') }}">
+                  <span class="badge bg-secondary">{{ tag.name is defined ? tag.name : '' }}</span>
+                </a>
+              {% endfor %}
+            {% endif %}
+            <span class="badge bg-secondary">Pimcore</span>
+            <span class="badge bg-secondary">Blog</span>
+            <span class="badge bg-secondary">Example</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="position-sticky" style="top: 2rem;">
+          {% if blog_post.about is defined and blog_post.about is not null %}
+          <div class="p-4 mb-3 bg-light rounded">
+            <h4 class="fst-italic">About</h4>
+            <p class="mb-0">{{ blog_post.about }}</p>
+          </div>
+          {% endif %}
+
+          {% if blog_post.ad is defined and blog_post.ad is not null %}
+          <div class="mb-3 bg-light rounded">
+            {{ blog_post.ad | raw }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- BLOG SINGLE END -->
+
+  {% if blog_post.related_blog_posts is defined and (blog_post.related_blog_posts | length > 0) %}
+  <!-- BLOG CARDS START -->
+  <div class="container">
+    <div class="row">
+      <div class="col-12 p-3">
+        <hr>
+        <h3>Related posts</h3>
+      </div>
+      {% include '_partials/blog_card.html.twig' with { blog_posts: blog_post.related_blog_posts} %}
+    </div>
+  </div>
+  <!-- BLOG CARDS END -->
+  {% endif %}
+
+{% endblock %}
+
+{% block PAGE_JS %}
+{% endblock %}

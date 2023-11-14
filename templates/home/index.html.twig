@@ -1,0 +1,14 @@
+{% extends 'layout/app.html.twig' %}
+
+{% block PAGE_CSS %}
+{% endblock %}
+
+{% block CONTENT_MID %}
+{{ pimcore_areablock('content', {
+    allowed: ["gallery-carousel", "latest-blog-posts"]
+}) }}
+
+{% endblock %}
+
+{% block PAGE_JS %}
+{% endblock %}

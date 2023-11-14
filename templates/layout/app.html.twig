@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <!-- Bootstrap core CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+    {% if not document is defined or not document %}
+        {% set document = pimcore_document(1) %}
+    {% endif %}
+
+    {% if document is instanceof('\\Pimcore\\Model\\Document\\Link') %}
+        {% set document = document.getObject() %}
+    {% endif %}
+
+    {% block SEO %}
+        {% if document.getTitle() is not empty %}
+            {% do pimcore_head_title().set(document.getTitle()) %}
+        {% endif %}
+
+        {% if document.getDescription() is not empty %}
+            {% do pimcore_head_meta().setDescription(document.getDescription()) %}
+        {% endif %}
+    {% endblock %}
+
+    {% do pimcore_head_title().append('Blog') %}
+    {% do pimcore_head_title().setSeparator(' - ') %}
+
+    {% block layout_head_meta deferred %}
+        {{ pimcore_head_title() }}
+        {{ pimcore_head_meta() }}
+
+        {% if pimcore_placeholder('canonical').count() %}
+            <link rel="canonical" href="{{ pimcore_placeholder('canonical') }}" />
+        {% endif %}
+    {% endblock %}
+
+    {% block head_stylesheets deferred %}
+    {{ pimcore_head_link() }}
+    {% endblock %}
+
+    {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_script_tags('app') }}
+
+    {% block PAGE_CSS %}
+    {% endblock %}
+
+
+</head>
+<body>
+
+<header>
+    {%if not editmode %}
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        {% set navStartNode = document.getProperty('navigation_root') %}
+
+        {%  if not navStartNode is instanceof('\\Pimcore\\Model\\Document\\Page') %}
+            {% if pimcore_site_is_request() %}
+                {% set site = pimcore_site_current() %}
+                {% set navStartNode = site.getRootDocument() %}
+            {% else %}
+                {% set navStartNode = pimcore_document(1) %}
+            {% endif %}
+        {% endif %}
+
+        {% set mainNavigation = pimcore_build_nav({active: document, root: navStartNode}) %}
+
+        {% set menuRenderer = pimcore_nav_renderer('menu') %}
+
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ navStartNode }}">Blog</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link {{ document.id == navStartNode.id ? 'active' : '' }}"
+                           aria-current="page" href="{{ navStartNode }}">{{ navStartNode.title }}</a>
+                    </li>
+                    {% for page in mainNavigation %}
+                        {% if page.isVisible() and menuRenderer.accept(page) %}
+                            {% set hasChildren = page.hasPages() %}
+
+                            {% if not hasChildren %}
+                                <li class="nav-item">
+                                    <a class="nav-link {{ document.id == page.id ? 'active' : '' }}"
+                                       aria-current="page" href="{{ page.getHref() }}">{{ page.getLabel()|trans }}</a>
+                                </li>  
+                            {% else %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle {{ document.id == page.id ? 'active' : '' }}"
+                                       href="{{ page.getHref() }}" aria-expanded="false"
+                                        id="navBarDropdown_{{ page.id }}" role="button"
+                                       data-bs-toggle="dropdown" aria-haspopup="true">
+                                        {{ page.getLabel()|trans }}
+                                    </a>
+
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown_{{ page.id }}">
+                                        {% for child in page.getPages() %}
+                                            {% if child.isVisible() and menuRenderer.accept(child) %}
+                                            <li><a class="dropdown-item" href="{{ child.getHref() }}">{{ child.getLabel()|trans }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search blog posts" aria-label="Search blog posts">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+</header>
+
+<main class="d-flex flex-column min-vh-100">
+    {% block CONTENT_MID %}
+    {% endblock %}
+
+    {{ pimcore_inc(document.getProperty('footer')) }}
+</main>
+
+{% block PAGE_JS %}
+{% endblock %}
+</body>
+</html>

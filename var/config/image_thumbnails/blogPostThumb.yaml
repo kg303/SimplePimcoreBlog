@@ -1,0 +1,28 @@
+pimcore:
+    assets:
+        image:
+            thumbnails:
+                definitions:
+                    blogPostThumb:
+                        items:
+                            -
+                                method: cover
+                                arguments:
+                                    width: 414
+                                    height: 227
+                                    positioning: center
+                                    forceResize: true
+                        medias: {  }
+                        name: blogPostThumb
+                        description: ''
+                        group: ''
+                        format: SOURCE
+                        quality: 85
+                        highResolution: null
+                        preserveColor: false
+                        preserveMetaData: false
+                        rasterizeSVG: false
+                        downloadable: false
+                        modificationDate: 1699437638
+                        creationDate: 1699437606
+                        preserveAnimation: false

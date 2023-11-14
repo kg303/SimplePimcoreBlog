@@ -1,0 +1,44 @@
+<!-- PAGINATION START -->
+{% if paginator is defined %}
+    <div class="row">
+        <div class="col-3">
+            Showing {{ paginator.firstItemNumber }} to {{ paginator.lastItemNumber }} of {{ paginator.totalCount }} results
+        </div>
+        <div class="col-6">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if paginator.previous is defined %}
+                        <li class="page-item">
+                            <a class="page-link prev" href="{{ pimcore_url({'page': paginator.previous}) }}" aria-disabled="true">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% for page in paginator.pagesInRange %}
+                        {% if paginator.current == page %}
+                            <li class="page-item active">
+                                <span class="page-link">
+                                    {{ page }}
+                                </span>
+                                <span class="sr-only">(current)</span>
+                            </li>
+                        {% elseif page > 0 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ pimcore_url({'page': page}) }}">
+                                    {{ page }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if paginator.next is defined %}
+                        <li class="page-item">
+                            <a class="page-link next" href="{{ pimcore_url({'page': paginator.next}) }}" aria-disabled="true">Next</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endif %}
+<!-- PAGINATION END -->

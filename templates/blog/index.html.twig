@@ -1,0 +1,100 @@
+{% extends 'layout/app.html.twig' %}
+
+
+{% block PAGE_CSS %}
+    {{ encore_entry_link_tags('blog_listing') }}
+{% endblock %}
+
+{% block CONTENT_MID %}
+
+<div class="container-fluid">
+    <div class="row-cols-auto">
+        <h1 class="text-center mt-5 mb-5"><b>Blog</b></h1>
+        <hr>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <form class="blog-search-form">
+                <input type="hidden" name="sortBy" 
+                    value="{{ app.request.get('sortBy', 'date-desc') }}" 
+                    class="blog-sort-by-hidden">
+                <input type="hidden" name="perPage" 
+                    value=" {{ app.request.get('perPage', 6) }} " 
+                    class="blog-per-page-hidden">
+                <fieldset>
+                    <legend>Filters</legend>
+                    <div class="mb-3">
+                        <label for="search" class="form-label">Search blog posts</label>
+                        <input type="text" id="search" 
+                            class="form-control" 
+                            placeholder="Search blog posts"
+                            name="query" value="{{ app.request.get('query', '') }}"
+                        >
+                    </div>
+                    <div class="mb-3">
+                        <label for="categories" class="form-label">Select categories</label>
+                        <select id="categories" class="form-select categories-select" name="categories[]" multiple>
+                            {% for blog_post_category in blog_post_categories %}
+                                <option {{ blog_post_category.id in app.request.get('categories', []) ? 'selected' : '' }}
+                                value="{{ blog_post_category.id }}">
+                                    {{ blog_post_category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col-8">
+            <div class="row justify-content-end">
+                <div class="col-3 mb-3">
+                    <label for="perPage" class="form-label">Per page</label>
+                    <select id="perPage" class="form-select blog-per-page" name="perPage">
+                        <option value="6"
+                        {{ app.request.get('perPage', 6)  == '6' ? 'selected' : '' }}>
+                            6
+                        </option>
+                        <option value="12"
+                        {{ app.request.get('perPage', 12)  == '12' ? 'selected' : '' }}>
+                            12
+                        </option>  
+                        <option value="18"
+                        {{ app.request.get('perPage', 18)  == '18' ? 'selected' : '' }}>
+                            18
+                        </option>                    
+                    </select>
+                </div>
+                <div class="col-3 mb-3">
+                    <label for="sortBy" class="form-label">Sort by</label>
+                    <select id="sortBy" class="form-select blog-sort-by" name="sortBy">
+                        <option value="date-desc"
+                        {{ app.request.get('sortBy', 'date-desc')  == 'date-desc' ? 'selected' : '' }}>
+                            Latest
+                        </option>  
+                        <option value="date-asc"
+                        {{ app.request.get('sortBy', 'date-asc')  == 'date-asc' ? 'selected' : '' }}>
+                            Oldest
+                        </option> 
+                    </select>
+                </div>
+            </div>
+            <!-- BLOG CARDS START -->
+            {% if blog_posts | length > 0 %}
+                <div class="row">
+                    {% include '_partials/blog_card.html.twig' %}
+                </div>
+                {% include '_partials/pagination.html.twig' %}
+            {% else %}
+                <p class="text-center mt-5"><b>Try another keyword?</b>No results found.</p>
+            {% endif %}
+            <!-- BLOG CARDS END -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block PAGE_JS %}
+    {{ encore_entry_script_tags('blog_listing') }}
+{% endblock %}
